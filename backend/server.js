@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 /* ---------------- FIREBASE ---------------- */
-const serviceAccount = require("./firebase-adminsdk.json");
+const serviceAccount = require("/etc/secrets/firebase-adminsdk.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL:
