@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rewards</title>
+
+    <style>
+       body {
+    font-family: 'Segoe UI', sans-serif;
+
+    background:
+        linear-gradient(135deg, #0f172a, #1e293b);
+
+    color: white;
+
+    padding: 20px;
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    box-sizing: border-box;
+
+    min-height: 100vh;
+}
+        h2 {
+            text-align: center;
+        }
+
+       #balance {
+
+    text-align: center;
+
+    font-size: 24px;
+
+    margin-bottom: 30px;
+
+    font-weight: bold;
+
+    color: #38bdf8;
+
+    background: rgba(255,255,255,0.08);
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    backdrop-filter: blur(10px);
+}
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+
+    color: #38bdf8;
+
+    margin-bottom: 20px;
+}
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .card {
+
+    background: rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(10px);
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    width: 190px;
+
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+
+    text-align: center;
+
+    transition: 0.3s;
+
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.card h3 {
+    color: white;
+}
+
+.card p {
+    color: #cbd5e1;
+}
+
+        .card:hover {
+
+    transform: translateY(-6px) scale(1.03);
+
+    box-shadow: 0 10px 25px rgba(56,189,248,0.35);
+}
+        .card img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+      .card button {
+
+    margin-top: 12px;
+
+    padding: 10px 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        #38bdf8,
+        #0ea5e9
+    );
+
+    color: white;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+        .card button:disabled {
+
+    background: #64748b;
+
+    cursor: not-allowed;
+}
+.history-item {
+
+    background: rgba(255,255,255,0.08);
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    margin-bottom: 14px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+    backdrop-filter: blur(8px);
+
+    color: white;
+}
+
+        .back {
+
+    margin-top: 25px;
+
+    padding: 10px 18px;
+
+    border-radius: 10px;
+
+    border: none;
+
+    background: #38bdf8;
+
+    color: white;
+
+    cursor: pointer;
+}
+    </style>
+</head>
+
+<body>
+
+<h2>🎁 Reward Store</h2>
+
+<div id="balance">Loading...</div>
+<button onclick="readPage()">🔊 Read Page</button>
+
+<!-- 🍔 FOOD -->
+<div class="section">
+    <h3>🍔 Food & Cafes</h3>
+    <div class="cards" id="food"></div>
+</div>
+
+<!-- 💊 MEDICAL -->
+<div class="section">
+    <h3>💊 Medical</h3>
+    <div class="cards" id="medical"></div>
+</div>
+
+<!-- 📱 RECHARGE -->
+<div class="section">
+    <h3>📱 Mobile Recharge</h3>
+    <div class="cards" id="recharge"></div>
+</div>
+
+<!-- 📜 HISTORY -->
+<div id="history">
+    <h3>📜 Redemption History</h3>
+    <div id="historyList"></div>
+</div>
+
+<button class="back" onclick="goBack()">⬅ Back</button>
+
+<script>
+
+let voiceEnabled = true;
+
+function speak(text) {
+    if (!voiceEnabled) return;
+
+    window.speechSynthesis.cancel(); // 🔥 prevents overlapping voices
+
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.rate = 0.95;
+    window.speechSynthesis.speak(msg);
+}
+
+// 🔊 READ PAGE (SMART VERSION)
+function readPage() {
+    const importantText = document.getElementById("balance").innerText;
+    speak("Welcome to rewards page. " + importantText);
+}
+
+function getUserWallet() {
+    const user = localStorage.getItem("currentUser");
+    return localStorage.getItem("wallet_" + user);
+}
+
+function goBack() {
+    window.location.href = "index.html";
+}
+
+let currentBalance = 0;
+
+/* 🔥 LOAD BALANCE */
+async function loadBalance() {
+    const wallet = getUserWallet();
+
+    const res = await fetch(`http://localhost:5000/api/user/${wallet}`);
+    const data = await res.json();
+
+    currentBalance = data.balance || 0;
+
+    document.getElementById("balance").innerText =
+        `💰 Balance: ${currentBalance} tokens`;
+
+    renderCards();
+}
+
+/* 🔥 REWARD DATA */
+const rewards = {
+    food: [
+        { name: "KFC", cost: 100, img: "assets/KFC-Logo-PNG-Image.png" },
+        { name: "Domino's", cost: 100, img: "assets/Dominos-Logo-PNG-Image.png" },
+        { name: "McDonald's", cost: 100, img: "assets/mcdonalds-logo-png-free-11658872811fnyapk1nsf.png" },
+        { name: "CCD", cost: 100, img: "assets/png-clipart-logo-cafe-coffee-day-brand-coffee-day-enterprises-touch-class-text-trademark.png" }
+    ],
+
+    medical: [
+        { name: "Apollo", cost: 80, img: "assets/desktop-wallpaper-apollo-pharmacy-and-pharmacy-logo.jpg" },
+        { name: "1mg", cost: 80, img: "assets/tata-1mg-logo-png_seeklogo-529921.png" },
+        { name: "PharmEasy", cost: 80, img: "assets/6129ddb0f55a8360a4139923_PharmEasy.png" }
+    ],
+
+    recharge: [
+        { name: "Jio ₹50", cost: 50, img: "assets/jio-logo-png-jio-logos-img-5100x5100.png" },
+        { name: "Airtel ₹50", cost: 50, img: "assets/png-transparent-bharti-airtel-limited-hd-logo.png" },
+        { name: "Vi ₹50", cost: 50, img: "assets/Vodafone app logo.jpg" }
+    ]
+};
+
+/* 🔥 RENDER CARDS */
+function renderCards() {
+    createSection("food", rewards.food);
+    createSection("medical", rewards.medical);
+    createSection("recharge", rewards.recharge);
+}
+
+function createSection(id, items) {
+    const container = document.getElementById(id);
+    container.innerHTML = "";
+
+    items.forEach(item => {
+
+        const disabled = currentBalance < item.cost;
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <img src="${item.img}" onerror="this.style.display='none'">
+            <h4>${item.name}</h4>
+            <p>${item.cost} tokens</p>
+            <button ${disabled ? "disabled" : ""} onclick="redeem(${item.cost}, '${item.name}')">
+                ${disabled ? "Not enough tokens" : "Redeem"}
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+/* 🔥 REDEEM */
+async function redeem(cost, name) {
+
+    const wallet = getUserWallet();
+
+    const res = await fetch("http://localhost:5000/api/redeem", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            walletAddress: wallet,
+            cost,
+            rewardName: name
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert("You need more tokens");
+        speak("You need more tokens to redeem this reward");
+        return;
+    }
+
+    const coupon = "CPN" + Math.floor(Math.random() * 100000);
+
+  alert(
+`🎉 Reward Redeemed Successfully!
+
+🎟 Coupon Code: ${data.couponCode}
+
+📅 Valid Till: ${data.expiryDate}`
+);
+   speak(
+`You redeemed ${name}. 
+Your coupon code is ${data.couponCode}. 
+It is valid till ${data.expiryDate}`
+);
+    loadBalance();
+    loadHistory();
+}
+
+/* 🔥 LOAD HISTORY */
+async function loadHistory() {
+
+    const wallet = getUserWallet();
+
+    const res = await fetch(
+        `http://localhost:5000/api/redemptions/${wallet}`
+    );
+
+    const data = await res.json();
+
+    const list = document.getElementById("historyList");
+
+    list.innerHTML = "";
+
+    // ❌ no redemption yet
+    if (data.length === 0) {
+
+        list.innerHTML = `
+            <p style="color:#555;">
+                No rewards redeemed yet
+            </p>
+        `;
+
+        return;
+    }
+
+    data.forEach(item => {
+
+        const div = document.createElement("div");
+
+        div.className = "history-item";
+
+        const date = new Date(item.timestamp)
+            .toLocaleString();
+div.innerHTML = `
+    <h4>🎁 ${item.rewardName}</h4>
+
+    <p>💰 ${item.cost} tokens used</p>
+
+    <p>
+        🎟 Coupon Code:
+        <b>${item.couponCode || "Not Available"}</b>
+    </p>
+
+    <p>
+        📅 Valid Till:
+        ${item.expiryDate || "Not Available"}
+    </p>
+
+    <small>
+        Redeemed on: ${date}
+    </small>
+`;
+
+        list.appendChild(div);
+    });
+}
+
+loadBalance();
+loadHistory();
+
+</script>
+
+<script src="script.js"></script>
+
+<script src="rewards.js"></script>
+
+<script>
+    applyAccessibilitySettings();
+</script>
+</body>
+</html>

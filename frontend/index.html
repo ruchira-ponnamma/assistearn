@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AssistEarn</title>
+    <link rel="stylesheet" href="style.css">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap"
+rel="stylesheet">
+</head>
+
+<body>
+
+<h1>🚀 AssistEarn Platform</h1> 
+
+<!-- 🔐 AUTH SECTION -->
+<div id="auth-section">
+    <h2>Login / Register</h2>
+
+    <input type="text" id="username" placeholder="Username"><br><br>
+    <input type="password" id="password" placeholder="Password"><br><br>
+
+    <button onclick="register()">Register</button>
+    <button onclick="login()">Login</button><br><br>
+    <button onclick="adminLogin()">Admin</button>
+    <button onclick="forgotPassword()">Forgot Password?</button>
+</div>
+
+<!-- 🧠 MAIN APP -->
+<div id="app-section" style="display:none;">
+
+    <!-- ✅ NEW: WELCOME USER -->
+    <h2 id="welcome"></h2>
+
+<div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+
+<div id="topTokenDisplay" class="top-token-display">
+    🪙 0 Tokens
+</div>
+
+<!-- 👤 USER BUTTONS -->
+<div class="top-buttons">
+
+    <button onclick="toggleAccessibilityPanel()">
+        ♿ Accessibility
+    </button>
+
+    <button onclick="openWallet()">
+        💰 Wallet
+    </button>
+
+    <button onclick="openRewards()">
+        🎁 Rewards
+    </button>
+
+    <button onclick="logout()">
+        🚪 Logout
+    </button>
+
+</div>
+
+</div>
+
+<!-- ♿ ACCESSIBILITY PANEL -->
+<div id="accessibilityPanel" class="accessibility-panel">
+
+    <h3>♿ Accessibility Settings</h3>
+
+    <div class="accessibility-option">
+        <input type="checkbox" id="voiceToggle" onchange="toggleVoice(this)">
+        <label for="voiceToggle">🔊 Voice Assistance</label>
+    </div>
+
+    <div class="accessibility-option">
+        <input type="checkbox" id="contrastToggle" onchange="toggleContrast(this)">
+        <label for="contrastToggle">🌗 High Contrast Mode</label>
+    </div>
+
+    <div class="accessibility-option">
+        <input type="checkbox" id="dyslexiaToggle" onchange="toggleDyslexia(this)">
+        <label for="dyslexiaToggle">🔤 Dyslexia Font</label>
+    </div>
+
+    <div class="accessibility-option">
+        <input type="checkbox" id="textToggle" onchange="toggleLargeText(this)">
+        <label for="textToggle">🔎 Large Text</label>
+    </div>
+
+</div>
+
+   
+
+    <hr>
+
+    <h2>🏢 Company Micro Tasks</h2>
+
+    <div class="task-grid">
+    <div class="task-card tooltip" 
+     id="data-entry-card"
+     onclick="goToTask('data-entry')">
+
+    <div class="task-title">
+        📝 Data Entry
+    </div>
+
+    <span class="tooltiptext"
+          id="data-entry-desc">
+
+        Fill out simple information forms accurately to earn tokens.
+
+    </span>
+
+    <div class="admin-controls"
+         style="display:none; margin-top:10px;">
+
+        <button onclick="editTask(event, 'data-entry')">
+            ✏ Edit
+        </button>
+
+        <button onclick="deleteTask(event, 'data-entry-card')">
+            🗑 Delete
+        </button>
+
+    </div>
+
+</div>
+       <div class="task-card tooltip"
+     id="survey-card"
+     onclick="goToTask('survey')">
+
+    <div class="task-title">
+        📊 Survey
+    </div>
+
+    <span class="tooltiptext"
+          id="survey-desc">
+
+        Answer short opinion-based surveys and earn rewards.
+
+    </span>
+
+    <div class="admin-controls"
+         style="display:none; margin-top:10px;">
+
+        <button onclick="editTask(event, 'survey')">
+            ✏ Edit
+        </button>
+
+        <button onclick="deleteTask(event, 'survey-card')">
+            🗑 Delete
+        </button>
+
+    </div>
+
+</div>
+<div class="task-card tooltip"
+     id="feedback-card"
+     onclick="goToTask('feedback')">
+
+    <div class="task-title">
+        ⭐ Feedback
+    </div>
+
+    <span class="tooltiptext"
+          id="feedback-desc">
+
+        Share your experience and platform feedback.
+
+    </span>
+
+    <div class="admin-controls"
+         style="display:none; margin-top:10px;">
+
+        <button onclick="editTask(event, 'feedback')">
+            ✏ Edit
+        </button>
+
+        <button onclick="deleteTask(event, 'feedback-card')">
+            🗑 Delete
+        </button>
+
+    </div>
+
+</div>
+<div class="task-card tooltip"
+     id="captcha-card"
+     onclick="goToTask('captcha')">
+
+    <div class="task-title">
+        🧩 CAPTCHA
+    </div>
+
+    <span class="tooltiptext"
+          id="captcha-desc">
+
+        Solve CAPTCHA challenges to verify human interaction.
+
+    </span>
+
+    <div class="admin-controls"
+         style="display:none; margin-top:10px;">
+
+        <button onclick="editTask(event, 'captcha')">
+            ✏ Edit
+        </button>
+
+        <button onclick="deleteTask(event, 'captcha-card')">
+            🗑 Delete
+        </button>
+
+    </div>
+
+</div>
+<div class="task-card tooltip"
+     id="verification-card"
+     onclick="goToTask('verification')">
+
+    <div class="task-title">
+        🔍 Content Verification
+    </div>
+
+    <span class="tooltiptext"
+          id="verification-desc">
+
+        Verify whether the displayed information is correct.
+
+    </span>
+
+    <div class="admin-controls"
+         style="display:none; margin-top:10px;">
+
+        <button onclick="editTask(event, 'verification')">
+            ✏ Edit
+        </button>
+
+        <button onclick="deleteTask(event, 'verification-card')">
+            🗑 Delete
+        </button>
+
+    </div>
+
+</div>
+    </div>
+
+    <hr style="margin:30px 0; opacity:0.3;">
+
+    <h2>🎯 Daily Engagement Tasks</h2>
+
+    <div class="task-grid">
+       <div class="task-card tooltip" onclick="goToTask('spin')">
+
+    🎡 Spin Wheel
+
+    <span class="tooltiptext">
+        <b>Spin Wheel</b>
+
+        Spin the wheel daily for surprise token rewards.<br><br>
+
+    
+    </span>
+
+</div>
+      <div class="task-card tooltip" onclick="goToTask('poll')">
+
+    📊 Poll
+
+    <span class="tooltiptext">
+        <b>Poll Participation</b>
+
+        Participate in quick opinion-based polls and earn rewards.<br><br>
+
+        
+    </span>
+
+</div>
+<div class="task-card tooltip" onclick="goToTask('quiz')">
+
+    🧠 Quiz
+
+    <span class="tooltiptext">
+        <b>Quiz Task</b>
+        Answer simple questions within the time limit to earn reward tokens.
+    </span>
+
+</div>
+<div class="task-card tooltip" onclick="goToTask('streak')">
+
+    📅 Daily Streak
+
+    <span class="tooltiptext">
+        <b>Daily Login Streak</b>
+
+        Log in daily to maintain your streak and unlock bonus rewards.<br><br>
+
+    </span>
+
+</div>
+<div class="task-card tooltip" onclick="goToTask('memory')">
+
+    🧩 Memory Game
+
+    <span class="tooltiptext">
+        <b>Memory Challenge</b>
+
+        Match all card pairs before time runs out to earn rewards.<br><br>
+
+    </span>
+
+</div>
+ 
+
+</div>
+
+<script src="script.js" defer></script>
+
+</body>
+</html>
+
+

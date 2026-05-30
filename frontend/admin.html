@@ -1,0 +1,20 @@
+<input id="title" placeholder="Task title">
+<input id="reward" placeholder="Reward">
+<button onclick="createTask()">Add Task</button>
+
+<script>
+async function createTask() {
+  await fetch("http://localhost:5000/api/create-task", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      title: document.getElementById("title").value,
+      reward: Number(document.getElementById("reward").value)
+    })
+  });
+
+  alert("Task added!");
+}
+</script>
+
+
