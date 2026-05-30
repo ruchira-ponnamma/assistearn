@@ -12,7 +12,6 @@ app.use(express.json());
 
 /* ---------------- FIREBASE ---------------- */
 const serviceAccount = require("./firebase-adminsdk.json");
-
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL:
@@ -361,7 +360,8 @@ app.get("/api/redemptions/:wallet", async (req, res) => {
 });
 
 /* ---------------- START SERVER ---------------- */
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log("🚀 Backend running on http://localhost:" + PORT);
+  console.log(`🚀 Backend running on port ${PORT}`);
 });
