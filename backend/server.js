@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 /* ---------------- FIREBASE ---------------- */
-const serviceAccount = require("/etc/secrets/firebase-adminsdk.json");
+const serviceAccount = require("./firebase-adminsdk.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL:
@@ -359,6 +359,133 @@ app.get("/api/redemptions/:wallet", async (req, res) => {
   }
 });
 
+app.post("/api/analytics", async (req, res) => {
+
+    try {
+
+        const { task, type } = req.body;
+
+        const ref =
+            db.ref(`analytics/${task}/${type}`);
+
+        const snapshot =
+            await ref.once("value");
+
+        const current =
+            snapshot.val() || 0;
+
+        await ref.set(current + 1);
+
+        res.json({ success: true });
+
+    } catch (err) {
+
+        res.status(500).json({
+            error: err.message
+        });
+    }
+});
+
+app.get("/api/dashboard", async (req, res) => {
+
+    try {
+
+        const usersSnap =
+            await db.ref("users")
+            .once("value");
+
+        const users =
+            usersSnap.val() || {};
+
+        const totalUsers =
+            Object.keys(users).length;
+
+        const analyticsSnap =
+            await db.ref("analytics")
+            .once("value");
+
+        const analytics =
+            analyticsSnap.val() || {};
+
+        let totalAttempts = 0;
+        let totalSuccess = 0;
+        let totalFailed = 0;
+
+        Object.values(analytics).forEach(task => {
+
+            totalAttempts +=
+                task.attempts || 0;
+
+            totalSuccess +=
+                task.success || 0;
+
+            totalFailed +=
+                task.failed || 0;
+        });
+
+        const redemptionsSnap =
+    await db.ref("redemptions")
+    .once("value");
+
+const redemptions =
+    redemptionsSnap.val() || {};
+
+const totalRedeemed =
+    Object.keys(redemptions).length;
+
+const rewardsSnap =
+    await db.ref("rewards")
+    .once("value");
+
+const rewards =
+    rewardsSnap.val() || {};
+
+let totalTokens = 0;
+
+Object.values(rewards).forEach(reward => {
+
+    totalTokens +=
+        reward.tokens || 0;
+
+});
+
+res.json({
+    totalUsers,
+    totalAttempts,
+    totalSuccess,
+    totalFailed,
+    totalRedeemed,
+    totalTokens
+});
+
+    } catch (err) {
+
+        res.status(500).json({
+            error: err.message
+        });
+    }
+});
+
+app.get("/api/task-breakdown", async (req, res) => {
+
+    try {
+
+        const analyticsSnap =
+            await db.ref("analytics")
+            .once("value");
+
+        const analytics =
+            analyticsSnap.val() || {};
+
+        res.json(analytics);
+
+    } catch (err) {
+
+        res.status(500).json({
+            error: err.message
+        });
+    }
+});
 /* ---------------- START SERVER ---------------- */
 const PORT = process.env.PORT || 5000;
 

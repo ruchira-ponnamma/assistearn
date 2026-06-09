@@ -292,7 +292,7 @@ async function login() {
         console.error("User creation failed", err);
     }
 
-    alert("Login successful!");
+    alert("✅ Login successful!");
 
     location.reload();
 }
@@ -489,7 +489,7 @@ if (savedVoice) {
 
 if (userWallet) {
 
-    try {
+    try { 
 
         const res = await fetch(
             `http://localhost:5000/api/user/${userWallet}`
@@ -549,6 +549,22 @@ if (localStorage.getItem("isAdmin") === "true") {
 
             el.style.display = "block";
         });
+}
+const analyticsBtn =
+    document.getElementById("analyticsBtn");
+
+if (
+    analyticsBtn &&
+    localStorage.getItem("isAdmin") === "true"
+) {
+
+    analyticsBtn.style.display = "inline-block";
+
+    analyticsBtn.onclick = () => {
+
+        window.location.href =
+            "adminDashboard.html";
+    };
 }
 [
     "data-entry",
@@ -626,6 +642,8 @@ if (localStorage.getItem("isAdmin") === "true") {
 
     // ✅ SINGLE SOURCE OF TRUTH
     const isDone = localStorage.getItem(`task_done_${wallet}_${task}_${today}`);
+
+    
 
     // ================= RENDER UI =================
 
@@ -711,7 +729,7 @@ if (localStorage.getItem("isAdmin") === "true") {
         <p>${q.question}</p>
 
         ${q.options.map(opt => `
-            <button class="taskBtn" onclick="completeTask('poll', 3)">
+            <button class="taskBtn" onclick="submitPoll()">
                 ${opt}
             </button>
         `).join("")}
@@ -1063,18 +1081,87 @@ function generateCaptcha() {
     }
 }
 
-function validateCaptcha() {
-    const userInput = document.getElementById("captchaInput").value;
+async function validateCaptcha() {
+
+    const userInput =
+        document.getElementById("captchaInput")
+        .value
+        .trim()
+        .toUpperCase();
+
+    // Attempt
+    await fetch(
+        "http://localhost:5000/api/analytics",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                task: "captcha",
+                type: "attempts"
+            })
+        }
+    );
 
     if (userInput === currentCaptcha) {
+
+        // Success
+        await fetch(
+            "http://localhost:5000/api/analytics",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    task: "captcha",
+                    type: "success"
+                })
+            }
+        );
+
+        alert("✅ CAPTCHA Verified");
+
         completeTask("captcha", 3);
+
     } else {
-        alert("Wrong CAPTCHA");
-        generateCaptcha(); // refresh
+
+        // Failed
+        await fetch(
+            "http://localhost:5000/api/analytics",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    task: "captcha",
+                    type: "failed"
+                })
+            }
+        );
+
+        alert(
+            "❌ Wrong CAPTCHA. Try again tomorrow."
+        );
+
+        const wallet =
+            getUserWallet();
+
+        const today =
+            new Date().toDateString();
+
+        localStorage.setItem(
+            `task_done_${wallet}_captcha_${today}`,
+            "true"
+        );
+
+        lockTaskUI();
     }
 }
 // ================= TASK ACTIONS =================
-function submitDataEntry() {
+async function submitDataEntry(){
 
     const name = document.getElementById("name")?.value;
     const age = document.getElementById("age")?.value;
@@ -1086,18 +1173,38 @@ function submitDataEntry() {
 
     // 🔒 lock AFTER validation
     lockTaskUI();
+    await fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "data-entry",
+        type: "success"
+    })
+});
 
     completeTask("data-entry", 8);
 }
 
-function submitSurvey() {
+async function submitSurvey() {
 
     lockTaskUI();
+    await fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "survey",
+        type: "success"
+    })
+});
 
     completeTask("survey", 6);
 }
 
-function submitFeedback() {
+async function submitFeedback() {
 
     lockTaskUI();
 
@@ -1108,8 +1215,33 @@ function submitFeedback() {
         alert("Fill all fields");
         return;
     }
+    await fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "feedback",
+        type: "success"
+    })
+});
 
     completeTask("feedback", 10);
+}
+async function submitPoll() {
+
+    await fetch("http://localhost:5000/api/analytics", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            task: "poll",
+            type: "success"
+        })
+    });
+
+    completeTask("poll", 3);
 }
 
 // ================= WHEEL =================
@@ -1207,6 +1339,17 @@ function spinWheel() {
         // ⏳ start countdown immediately
         const cd = document.getElementById("countdown");
         if (cd) startCountdown(cd);
+
+        fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "spin",
+        type: "success"
+    })
+});
 
         // 🔗 backend call
         completeTask("spin", reward);
@@ -1317,30 +1460,96 @@ async function completeTask(taskType, tokens) {
 }
 
 // ================= QUIZ =================
-function submitQuiz(selected, correct) {
+async function submitQuiz(selected, correct) {
 
-    // stop timer immediately
     if (quizTimer) clearInterval(quizTimer);
 
+    // attempt
+    await fetch("http://localhost:5000/api/analytics", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            task: "quiz",
+            type: "attempts"
+        })
+    });
+
     if (selected === correct) {
+
+        await fetch("http://localhost:5000/api/analytics", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                task: "quiz",
+                type: "success"
+            })
+        });
+
         completeTask("quiz", 5);
+
     } else {
+
+        await fetch("http://localhost:5000/api/analytics", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                task: "quiz",
+                type: "failed"
+            })
+        });
+
         alert("Wrong answer");
-        lockTaskUI(); // ❗ optional but recommended
+        lockTaskUI();
     }
 }
 //==============CONTENT VERIFICATION=========
-function submitVerification(selected, correct) {
+async function submitVerification(selected, correct) {
+
+    fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "verification",
+        type: "attempts"
+    })
+});
 
     // ✅ correct answer
     if (selected === correct) {
 
         alert("✅ Correct Answer!");
         speak("Correct answer");
-
+await fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "verification",
+        type: "success"
+    })
+});
         completeTask("verification", 12);
 
     } else {
+        await fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "verification",
+        type: "failed"
+    })
+});
 
         alert("❌ Wrong answer. Try again tomorrow.");
         speak("Wrong answer. Try again tomorrow");
@@ -1360,7 +1569,7 @@ function submitVerification(selected, correct) {
 }
 
 //=============DAILY STREAK==============
-function claimStreak() {
+async function claimStreak() {
 
     const today =
         new Date().toDateString();
@@ -1386,6 +1595,19 @@ function claimStreak() {
         `task_done_${wallet}_streak_${today}`,
         "true"
     );
+
+    
+
+await fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "streak",
+        type: "success"
+    })
+});
 
     // ✅ reward
     completeTask("streak", 2);
@@ -1429,7 +1651,17 @@ let matches = 0;
 let memoryTimer;
 let timeLeft = 30;
 
-function initMemoryGame() {
+async function initMemoryGame() {
+    await fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "memory",
+        type: "attempts"
+    })
+});
 
     // 🎯 symbol pool
     const allSymbols = ["🍎","🍌","🍇","🍊","🍓","🥝","🍉","🍍"];
@@ -1508,7 +1740,16 @@ function startMemoryTimer() {
         `task_done_${wallet}_memory_${today}`,
         "true"
     );
-
+fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "memory",
+        type: "failed"
+    })
+});
             lockTaskUI(); // 🔒 lock task
         }
 
@@ -1537,7 +1778,16 @@ function flipCard(card) {
 
     document.getElementById("result").innerText =
         "🎉 You matched all cards!";
-
+ fetch("http://localhost:5000/api/analytics", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        task: "memory",
+        type: "success"
+    })
+});
     completeTask("memory", 8);
 }
 

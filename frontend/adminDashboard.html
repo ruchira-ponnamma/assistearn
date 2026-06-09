@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AssistEarn Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>📊 AssistEarn Analytics</h1>
+
+    <div class="analytics-card">
+        <h3>👥 Registered Users</h3>
+        <p id="totalUsers">0</p>
+    </div>
+
+    <div class="analytics-card">
+        <h3>📌 Total Task Attempts</h3>
+        <p id="totalAttempts">0</p>
+    </div>
+
+    <div class="analytics-card">
+        <h3>✅ Successful Completions</h3>
+        <p id="totalSuccess">0</p>
+    </div>
+
+    <div class="analytics-card">
+        <h3>❌ Failed Validations</h3>
+        <p id="totalFailed">0</p>
+    </div>
+
+    <div class="analytics-card">
+        <h3>🎁 Rewards Redeemed</h3>
+        <p id="totalRedeemed">0</p>
+    </div>
+
+    <div class="analytics-card">
+        <h3>🪙 Tokens Distributed</h3>
+        <p id="totalTokens">0</p>
+    </div>
+
+    <br>
+<button onclick="window.location.href='taskBreakdown.html'">
+    📈 View Task Breakdown
+</button>
+
+<br><br>
+
+<button onclick="window.location.href='index.html'">
+    ⬅ Back
+</button>
+<script src="adminDashboard.js"></script>
+</body>
+
+</html>
