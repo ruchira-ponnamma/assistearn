@@ -2,7 +2,7 @@ async function loadAnalytics() {
 
     const res =
         await fetch(
-            "http://localhost:5000/api/dashboard"
+            "https://knee-ribbon-battering.ngrok-free.dev/api/dashboard"
         );
 
     const data =

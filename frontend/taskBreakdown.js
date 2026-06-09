@@ -2,7 +2,7 @@ async function loadTaskBreakdown() {
 
     const res =
         await fetch(
-            "http://localhost:5000/api/task-breakdown"
+            "https://knee-ribbon-battering.ngrok-free.dev/api/task-breakdown"
         );
 
     const data =

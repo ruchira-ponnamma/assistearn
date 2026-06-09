@@ -280,7 +280,7 @@ async function login() {
 
     // 🔥 EXISTING BACKEND CALL (KEEP SAME)
     try {
-        await fetch("http://localhost:5000/api/create-user", {
+        await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/create-user", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -492,7 +492,7 @@ if (userWallet) {
     try { 
 
         const res = await fetch(
-            `http://localhost:5000/api/user/${userWallet}`
+            `https://knee-ribbon-battering.ngrok-free.dev/api/user/${userWallet}`
         );
 
         const data = await res.json();
@@ -1091,7 +1091,7 @@ async function validateCaptcha() {
 
     // Attempt
     await fetch(
-        "http://localhost:5000/api/analytics",
+        "https://knee-ribbon-battering.ngrok-free.dev/api/analytics",
         {
             method: "POST",
             headers: {
@@ -1108,7 +1108,7 @@ async function validateCaptcha() {
 
         // Success
         await fetch(
-            "http://localhost:5000/api/analytics",
+            "https://knee-ribbon-battering.ngrok-free.dev/api/analytics",
             {
                 method: "POST",
                 headers: {
@@ -1129,7 +1129,7 @@ async function validateCaptcha() {
 
         // Failed
         await fetch(
-            "http://localhost:5000/api/analytics",
+            "https://knee-ribbon-battering.ngrok-free.dev/api/analytics",
             {
                 method: "POST",
                 headers: {
@@ -1173,7 +1173,7 @@ async function submitDataEntry(){
 
     // 🔒 lock AFTER validation
     lockTaskUI();
-    await fetch("http://localhost:5000/api/analytics", {
+    await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -1190,7 +1190,7 @@ async function submitDataEntry(){
 async function submitSurvey() {
 
     lockTaskUI();
-    await fetch("http://localhost:5000/api/analytics", {
+    await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -1215,7 +1215,7 @@ async function submitFeedback() {
         alert("Fill all fields");
         return;
     }
-    await fetch("http://localhost:5000/api/analytics", {
+    await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -1230,7 +1230,7 @@ async function submitFeedback() {
 }
 async function submitPoll() {
 
-    await fetch("http://localhost:5000/api/analytics", {
+    await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -1340,7 +1340,7 @@ function spinWheel() {
         const cd = document.getElementById("countdown");
         if (cd) startCountdown(cd);
 
-        fetch("http://localhost:5000/api/analytics", {
+        fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -1391,7 +1391,7 @@ async function completeTask(taskType, tokens) {
     try {
 
         // 🔥 STEP 1: VALIDATE (FIREBASE DAILY LIMIT)
-        const validateRes = await fetch("http://localhost:5000/api/validate-task", {
+        const validateRes = await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/validate-task", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1411,7 +1411,7 @@ async function completeTask(taskType, tokens) {
         
 
         // 🔥 STEP 2: RECORD REWARD (BLOCKCHAIN)
-        const rewardRes = await fetch("http://localhost:5000/api/record-reward", {
+        const rewardRes = await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/record-reward", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
            body: JSON.stringify({
@@ -1465,7 +1465,7 @@ async function submitQuiz(selected, correct) {
     if (quizTimer) clearInterval(quizTimer);
 
     // attempt
-    await fetch("http://localhost:5000/api/analytics", {
+    await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -1478,7 +1478,7 @@ async function submitQuiz(selected, correct) {
 
     if (selected === correct) {
 
-        await fetch("http://localhost:5000/api/analytics", {
+        await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1493,7 +1493,7 @@ async function submitQuiz(selected, correct) {
 
     } else {
 
-        await fetch("http://localhost:5000/api/analytics", {
+        await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1511,7 +1511,7 @@ async function submitQuiz(selected, correct) {
 //==============CONTENT VERIFICATION=========
 async function submitVerification(selected, correct) {
 
-    fetch("http://localhost:5000/api/analytics", {
+    fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -1527,7 +1527,7 @@ async function submitVerification(selected, correct) {
 
         alert("✅ Correct Answer!");
         speak("Correct answer");
-await fetch("http://localhost:5000/api/analytics", {
+await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -1540,7 +1540,7 @@ await fetch("http://localhost:5000/api/analytics", {
         completeTask("verification", 12);
 
     } else {
-        await fetch("http://localhost:5000/api/analytics", {
+        await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -1598,7 +1598,7 @@ async function claimStreak() {
 
     
 
-await fetch("http://localhost:5000/api/analytics", {
+await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -1634,7 +1634,7 @@ await fetch("http://localhost:5000/api/analytics", {
 async function isTaskCompletedToday(taskType) {
     const user = getUserWallet();
 
-    const res = await fetch("http://localhost:5000/api/user-rewards/" + user);
+    const res = await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/user-rewards/" + user);
     const data = await res.json();
 
     const today = new Date().toDateString();
@@ -1655,7 +1655,7 @@ async function initMemoryGame() {
 
     try {
 
-        await fetch("http://localhost:5000/api/analytics", {
+        await fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1750,7 +1750,7 @@ function startMemoryTimer() {
         `task_done_${wallet}_memory_${today}`,
         "true"
     );
-fetch("http://localhost:5000/api/analytics", {
+fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -1789,7 +1789,7 @@ function flipCard(card) {
     document.getElementById("result").innerText =
         "🎉 You matched all cards!";
 
-    fetch("http://localhost:5000/api/analytics", {
+    fetch("https://knee-ribbon-battering.ngrok-free.dev/api/analytics", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
