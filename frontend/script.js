@@ -1688,8 +1688,7 @@ async function initMemoryGame() {
     cards.sort(() => 0.5 - Math.random());
 
     const grid = document.getElementById("memoryGrid");
-    console.log("Memory Grid Found:", grid);
-alert("Memory Game Started");
+ 
     grid.innerHTML = "";
 
     // 🎯 dynamic grid layout
@@ -1783,22 +1782,32 @@ function flipCard(card) {
         matches++;
         firstCard = null;
 
-       if (matches === document.querySelectorAll("#memoryGrid div").length / 2) {
+  if (matches === document.querySelectorAll("#memoryGrid div").length / 2) {
 
-    clearInterval(memoryTimer);  // ✅ ADD THIS LINE HERE
+    clearInterval(memoryTimer);
 
     document.getElementById("result").innerText =
         "🎉 You matched all cards!";
- fetch("http://localhost:5000/api/analytics", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        task: "memory",
-        type: "success"
-    })
-});
+
+    fetch("http://localhost:5000/api/analytics", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            task: "memory",
+            type: "success"
+        })
+    });
+
+    const wallet = getUserWallet();
+    const today = new Date().toDateString();
+
+    localStorage.setItem(
+        `task_done_${wallet}_memory_${today}`,
+        "true"
+    );
+
     completeTask("memory", 8);
 }
 
