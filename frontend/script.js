@@ -1688,6 +1688,8 @@ async function initMemoryGame() {
     cards.sort(() => 0.5 - Math.random());
 
     const grid = document.getElementById("memoryGrid");
+    console.log("Memory Grid Found:", grid);
+alert("Memory Game Started");
     grid.innerHTML = "";
 
     // 🎯 dynamic grid layout
