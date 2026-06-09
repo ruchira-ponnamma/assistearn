@@ -1652,16 +1652,25 @@ let memoryTimer;
 let timeLeft = 30;
 
 async function initMemoryGame() {
-    await fetch("http://localhost:5000/api/analytics", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        task: "memory",
-        type: "attempts"
-    })
-});
+
+    try {
+
+        await fetch("http://localhost:5000/api/analytics", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                task: "memory",
+                type: "attempts"
+            })
+        });
+
+    } catch (err) {
+
+        console.log("Analytics unavailable");
+
+    }
 
     // 🎯 symbol pool
     const allSymbols = ["🍎","🍌","🍇","🍊","🍓","🥝","🍉","🍍"];
