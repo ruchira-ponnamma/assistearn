@@ -34,7 +34,13 @@ async function loadWallet() {
         console.log("Loading wallet for:", walletAddress);
 
         // ================= BALANCE =================
-        const res = await fetch(`https://knee-ribbon-battering.ngrok-free.dev/api/user/${walletAddress}`);
+       const res = await fetch(
+`https://knee-ribbon-battering.ngrok-free.dev/api/user/${walletAddress}`,
+{
+    headers: {
+        "ngrok-skip-browser-warning": "true"
+    }
+});
 
         let userData = null;
         try {
@@ -49,8 +55,13 @@ async function loadWallet() {
             `Total Tokens: ${balance}`;
 
         // ================= HISTORY =================
-        const rewardsRes = await fetch(`https://knee-ribbon-battering.ngrok-free.dev/api/user-rewards/${walletAddress}`);
-
+       const rewardsRes = await fetch(
+`https://knee-ribbon-battering.ngrok-free.dev/api/user-rewards/${walletAddress}`,
+{
+    headers: {
+        "ngrok-skip-browser-warning": "true"
+    }
+});
         let rewards = [];
         try {
             rewards = await rewardsRes.json();
