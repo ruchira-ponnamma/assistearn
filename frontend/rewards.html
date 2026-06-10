@@ -252,7 +252,7 @@ async function loadBalance() {
 }
 
 /* 🔥 REWARD DATA */
-const rewards = {
+const rewardCatalog = {
     food: [
         { name: "KFC", cost: 100, img: "assets/KFC-Logo-PNG-Image.png" },
         { name: "Domino's", cost: 100, img: "assets/Dominos-Logo-PNG-Image.png" },
@@ -275,9 +275,9 @@ const rewards = {
 
 /* 🔥 RENDER CARDS */
 function renderCards() {
-    createSection("food", rewards.food);
-    createSection("medical", rewards.medical);
-    createSection("recharge", rewards.recharge);
+    createSection("food", rewardCatalog.food);
+createSection("medical", rewardCatalog.medical);
+createSection("recharge", rewardCatalog.recharge);
 }
 
 function createSection(id, items) {
@@ -413,7 +413,9 @@ loadHistory();
 
 
 <script>
+if (typeof applyAccessibilitySettings === "function") {
     applyAccessibilitySettings();
+}
 </script>
 </body>
 </html>
