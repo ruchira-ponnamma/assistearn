@@ -491,11 +491,17 @@ if (userWallet) {
 
     try { 
 
-        const res = await fetch(
-            `https://knee-ribbon-battering.ngrok-free.dev/api/user/${userWallet}`
-        );
+       const res = await fetch(
+    `https://knee-ribbon-battering.ngrok-free.dev/api/user/${userWallet}`,
+    {
+        headers: {
+            "ngrok-skip-browser-warning": "true"
+        }
+    }
+);
 
         const data = await res.json();
+        console.log("TOP TOKEN API:", data);
 
         const tokenDisplay =
             document.getElementById("topTokenDisplay");
@@ -699,6 +705,12 @@ if (
     title.innerText = "⭐ Feedback";
 
     const q = getRandomFeedback();
+    const wallet = getUserWallet();
+const today = new Date().toDateString();
+
+const completed = localStorage.getItem(
+    `task_done_${wallet}_feedback_${today}`
+);
 
     container.innerHTML = `
         <p>${q.q1}</p>
@@ -713,6 +725,18 @@ if (
         
         <button onclick="goBack()">⬅ Back</button>
     `;
+    if (completed === "true") {
+
+    const status = document.getElementById("taskStatus");
+
+    if (status) {
+        status.innerText = "🔒 Task completed for today";
+    }
+
+    lockTaskUI();
+
+    return;
+}
  if (canSpeakTask("feedback")) {
     setTimeout(() => {
         speak(`${q.q1}. ${q.q2}`);
@@ -724,6 +748,12 @@ if (
     title.innerText = "📊 Poll";
 
     const q = getRandomPoll();
+    const wallet = getUserWallet();
+const today = new Date().toDateString();
+
+const completed = localStorage.getItem(
+    `task_done_${wallet}_poll_${today}`
+);
 
     container.innerHTML = `
         <p>${q.question}</p>
@@ -738,6 +768,20 @@ if (
        
         <button onclick="goBack()">⬅ Back</button>
     `;
+    if (completed === "true") {
+
+    const status =
+        document.getElementById("taskStatus");
+
+    if (status) {
+        status.innerText =
+            "⛔ Already completed today";
+    }
+
+    lockTaskUI();
+
+    return;
+}
 if (canSpeakTask("poll")) {
     setTimeout(() => {
         speak(q.question);
@@ -874,27 +918,26 @@ if (task === "streak") {
         );
 
     // 🔥 UI
-    container.innerHTML = `
+   container.innerHTML = `
 
-       
+    <p>Claim your daily reward</p>
 
-        <p>Claim your daily reward</p>
+    <button
+        id="claimBtn"
+        class="taskBtn"
+        onclick="claimStreak()"
+    >
+        Claim Reward
+    </button>
 
-        <button
-            id="claimBtn"
-            class="taskBtn"
-            onclick="claimStreak()"
-        >
-            Claim Reward
-        </button>
+    <h3 id="taskStatus"></h3>
 
-        <p id="countdown"></p>
+    <p id="countdown"></p>
 
-        <button onclick="goBack()">
-            ⬅ Back
-        </button>
-    `;
-
+    <button onclick="goBack()">
+        ⬅ Back
+    </button>
+`;
     // 🔒 already claimed today
     if (claimed === "true") {
 
@@ -912,6 +955,14 @@ if (task === "streak") {
             btn.style.cursor = "not-allowed";
 
             btn.style.opacity = "0.7";
+
+            const status =
+    document.getElementById("taskStatus");
+
+if (status) {
+    status.innerText =
+        "⛔ Already completed today";
+}
         }
     }
 
@@ -987,6 +1038,11 @@ initMemoryGame();
 if (completed === "true") {
 
     clearInterval(memoryTimer);
+
+    const timerEl = document.getElementById("timer");
+    if (timerEl) {
+        timerEl.innerText = "🔒 Task Locked";
+    }
 
     lockTaskUI();
 
@@ -1721,7 +1777,7 @@ async function initMemoryGame() {
 
         grid.appendChild(card);
     });
-    startMemoryTimer();
+   
 }
 
 function startMemoryTimer() {

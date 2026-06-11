@@ -34,31 +34,46 @@ async function loadWallet() {
         console.log("Loading wallet for:", walletAddress);
 
         // ================= BALANCE =================
-        const res = await fetch(`https://knee-ribbon-battering.ngrok-free.dev/api/user/${walletAddress}`);
-        console.log("FETCH SUCCESS", res);
+  const url = `https://knee-ribbon-battering.ngrok-free.dev/api/user/${walletAddress}`;
 
-        let userData = null;
-        try {
-            userData = await res.json();
-            console.log("USER DATA", userData);
-        } catch {
-            userData = null;
-        }
+console.log("FETCHING URL:", url);
 
-        const balance = userData && userData.balance ? userData.balance : 0;
+const res = await fetch(url, {
+    headers: {
+        "ngrok-skip-browser-warning": "true"
+    }
+});
 
-        document.getElementById("balance").innerText =
-            `Total Tokens: ${balance}`;
+console.log("FETCH SUCCESS", res);
+
+let userData = null;
+try {
+    userData = await res.json();
+    console.log("USER DATA", userData);
+} catch {
+    userData = null;
+}
+const balance = userData && userData.balance ? userData.balance : 0;
+
+document.getElementById("balance").innerText =
+    `Total Tokens: ${balance}`;
 
         // ================= HISTORY =================
-        const rewardsRes = await fetch(`https://knee-ribbon-battering.ngrok-free.dev/api/user-rewards/${walletAddress}`);
-
-        let rewards = [];
-        try {
-            rewards = await rewardsRes.json();
-        } catch {
-            rewards = [];
+const rewardsRes = await fetch(
+    `https://knee-ribbon-battering.ngrok-free.dev/api/user-rewards/${walletAddress}`,
+    {
+        headers: {
+            "ngrok-skip-browser-warning": "true"
         }
+    }
+);
+
+let rewards = [];
+try {
+    rewards = await rewardsRes.json();
+} catch {
+    rewards = [];
+}
 
         const list = document.getElementById("history");
         list.innerHTML = "";
