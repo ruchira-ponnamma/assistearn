@@ -35,10 +35,12 @@ async function loadWallet() {
 
         // ================= BALANCE =================
         const res = await fetch(`https://knee-ribbon-battering.ngrok-free.dev/api/user/${walletAddress}`);
+        console.log("FETCH SUCCESS", res);
 
         let userData = null;
         try {
             userData = await res.json();
+            console.log("USER DATA", userData);
         } catch {
             userData = null;
         }
