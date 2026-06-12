@@ -1,10 +1,14 @@
 async function loadAnalytics() {
 
-    const res =
+   const res =
         await fetch(
-            "https://knee-ribbon-battering.ngrok-free.dev/api/dashboard"
+            "https://knee-ribbon-battering.ngrok-free.dev/api/dashboard",
+            {
+                headers: {
+                    "ngrok-skip-browser-warning": "true"
+                }
+            }
         );
-
     const data =
         await res.json();
 

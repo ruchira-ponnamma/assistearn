@@ -1,3 +1,4 @@
+console.log("WALLET JS VERSION TEST");
 // ================= GET USER WALLET =================
 function getUserWallet() {
     const user = localStorage.getItem("currentUser");
@@ -114,6 +115,26 @@ try {
         document.getElementById("balance").innerText = "Unable to load wallet";
     }
 }
+function applyAccessibilitySettings() {
+
+    const highContrast =
+        localStorage.getItem("highContrast") === "true";
+
+    if (highContrast) {
+        document.body.classList.add("high-contrast");
+    }
+
+    const dyslexia =
+        localStorage.getItem("dyslexiaFont") === "true";
+
+    if (dyslexia) {
+        document.body.classList.add("dyslexia-font");
+    }
+}
 
 // ================= AUTO LOAD =================
-window.onload = loadWallet;
+window.onload = () => {
+    applyAccessibilitySettings();
+    loadWallet();
+};
+console.log("ACCESSIBILITY FUNCTION LOADED");

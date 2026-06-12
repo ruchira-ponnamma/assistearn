@@ -1,10 +1,14 @@
 async function loadTaskBreakdown() {
 
-    const res =
-        await fetch(
-            "https://knee-ribbon-battering.ngrok-free.dev/api/task-breakdown"
-        );
-
+  const res =
+    await fetch(
+        "https://knee-ribbon-battering.ngrok-free.dev/api/task-breakdown",
+        {
+            headers: {
+                "ngrok-skip-browser-warning": "true"
+            }
+        }
+    );
     const data =
         await res.json();
 
